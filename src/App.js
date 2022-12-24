@@ -45,7 +45,7 @@ function Page1() {
   let queryResponse = useQuery("GET-POSTS", getPostsFromApi, {
     cacheTime: 5000,
   });
-  let { isLoading, data } = queryResponse;
+  let { isLoading, error, isError, data } = queryResponse;
 
   console.log(queryResponse);
 
@@ -53,6 +53,14 @@ function Page1() {
     return (
       <div>
         <h1>Loading...</h1>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <h1>Error while fetching data</h1>
       </div>
     );
   }
