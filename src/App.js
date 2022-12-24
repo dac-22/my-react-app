@@ -43,7 +43,8 @@ function RootLayout() {
 
 function Page1() {
   let queryResponse = useQuery("GET-POSTS", getPostsFromApi, {
-    cacheTime: 5000,
+    cacheTime: 15000,
+    staleTime: 10000,
   });
   let { isLoading, error, isError, data } = queryResponse;
 
