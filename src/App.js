@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
   createBrowserRouter,
   Link,
@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 let getPostsFromApi = () => {
-  let url = "https://jsonplaceholder.typicode.com/posts";
+  let url = "http://localhost:4000/messages";
   return axios.get(url);
 };
 
@@ -42,13 +42,24 @@ function RootLayout() {
 }
 
 function Page1() {
-  let queryResponse = useQuery("GET-POSTS", getPostsFromApi, {
-    cacheTime: 15000,
-    staleTime: 10000,
-  });
+  let queryClient = useQueryClient();
+  let queryResponse = useQuery("get-messages", getPostsFromApi, {});
   let { isLoading, error, isError, data } = queryResponse;
 
-  console.log(queryResponse);
+  let { mutate: addMessage } = useMutation(
+    async () => {
+      let url = `http://localhost:4000/messages`;
+      axios.post(url, {
+        id: Math.floor(Math.random() * 1000),
+        message: "hiiii",
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("get-messages");
+      },
+    }
+  );
 
   if (isLoading) {
     return (
@@ -68,12 +79,14 @@ function Page1() {
 
   return (
     <div>
+      <input type="button" value="Add Message" onClick={() => addMessage()} />
+
       {data?.data.map((item, index) => (
         <div
           key={index}
           className="alert alert-primary m-0 my-1 text-capitalize"
         >
-          {item?.title}
+          {item?.message}
         </div>
       ))}
     </div>
