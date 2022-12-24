@@ -1,14 +1,18 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 
-function App() {
+let getPostsFromApi = () => {
   let url = "https://jsonplaceholder.typicode.com/posts";
-  let { isFetching, data } = useQuery("GET-POSTS", () => {
-    return axios.get(url);
-  });
-  console.log(isFetching, data);
+  return axios.get(url);
+};
 
-  if (isFetching) {
+function App() {
+  let queryResponse = useQuery("GET-POSTS", getPostsFromApi);
+  let { isLoading, data } = queryResponse;
+
+  console.log(queryResponse);
+
+  if (isLoading) {
     return (
       <div>
         <h1>Loading...</h1>
