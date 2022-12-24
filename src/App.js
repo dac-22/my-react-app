@@ -7,7 +7,9 @@ let getPostsFromApi = () => {
 };
 
 function App() {
-  let queryResponse = useQuery("GET-POSTS", getPostsFromApi);
+  let queryResponse = useQuery("GET-POSTS", getPostsFromApi, {
+    cacheTime: 5000,
+  });
   let { isLoading, data } = queryResponse;
 
   console.log(queryResponse);
