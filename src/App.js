@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
   createBrowserRouter,
@@ -42,16 +43,17 @@ function RootLayout() {
 }
 
 function Page1() {
+  let [message, setMessage] = useState("");
   let queryClient = useQueryClient();
   let queryResponse = useQuery("get-messages", getPostsFromApi, {});
   let { isLoading, error, isError, data } = queryResponse;
 
   let { mutate: addMessage } = useMutation(
-    async () => {
+    async (m1) => {
       let url = `http://localhost:4000/messages`;
       axios.post(url, {
         id: Math.floor(Math.random() * 1000),
-        message: "hiiii",
+        message: m1 || "hiiii",
       });
     },
     {
@@ -79,7 +81,17 @@ function Page1() {
 
   return (
     <div>
-      <input type="button" value="Add Message" onClick={() => addMessage()} />
+      <input
+        type="text"
+        placeholder="Enter Messages"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <input
+        type="button"
+        value="Add Message"
+        onClick={() => addMessage(message)}
+      />
 
       {data?.data.map((item, index) => (
         <div
